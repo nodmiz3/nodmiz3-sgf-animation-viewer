@@ -49,15 +49,16 @@
 <div id="board"></div>
 
 <script>
-let size = 6;              // デフォルト
+let size = 19;          // デフォルト（SZ がないときは 19 路）
 let moves = [];
 let currentMoveIndex = 0;
 let autoplayTimer = null;
 
-// 盤面生成
+// 盤面生成（毎回作り直す）
 function buildBoard() {
   const boardEl = document.getElementById('board');
-  boardEl.innerHTML = '';
+  boardEl.innerHTML = "";  // 古い盤を完全削除
+
   boardEl.style.gridTemplateColumns = `repeat(${size}, 40px)`;
   boardEl.style.gridTemplateRows = `repeat(${size}, 40px)`;
 
@@ -72,7 +73,7 @@ function buildBoard() {
   }
 }
 
-// SGF から盤サイズ SZ を取得
+// SZ[n] から盤サイズ取得
 function detectBoardSize(sgf) {
   const m = sgf.match(/SZ
 
@@ -83,10 +84,10 @@ function detectBoardSize(sgf) {
     const s = parseInt(m[1], 10);
     if (!isNaN(s) && s > 0 && s <= 25) return s;
   }
-  return 19; // SZ がない場合は 19 路盤とみなす
+  return 19;
 }
 
-// SGF パース（着手だけ）
+// SGF から着手だけパース
 function parseSGF(sgf) {
   const moveRegex = /;(B|W)
 
@@ -109,17 +110,17 @@ function parseSGF(sgf) {
   return result;
 }
 
-// 盤面クリア
+// 盤面の石を全部消す
 function clearBoard() {
   document.querySelectorAll('.stone').forEach(s => s.remove());
 }
 
-// 座標を A1 に変換
+// A1 形式に変換
 function coordToHuman(x, y) {
   return String.fromCharCode(65 + x) + (y + 1);
 }
 
-// 1手進める
+// 1手打つ
 function playMove(index) {
   if (index >= moves.length) return;
   const move = moves[index];
@@ -163,25 +164,23 @@ function stopAutoplay() {
   }
 }
 
-// 初期盤面
-buildBoard();
-
-// ボタン
+// SGF 読み込みボタン
 document.getElementById('parseBtn').addEventListener('click', () => {
   const sgfText = document.getElementById('sgfInput').value;
 
-  // 盤サイズ自動判定
-  size = detectBoardSize(sgfText);
-  buildBoard();
+  size = detectBoardSize(sgfText);  // 盤サイズ自動判定
+  buildBoard();                     // 新しい盤を生成
 
   moves = parseSGF(sgfText);
   currentMoveIndex = 0;
   clearBoard();
   stopAutoplay();
+
   document.getElementById('info').textContent =
     `読み込み完了: 盤サイズ ${size} 路 / 手数 ${moves.length} 手`;
 });
 
+// 再生系ボタン
 document.getElementById('playBtn').addEventListener('click', startAutoplay);
 
 document.getElementById('stepBtn').addEventListener('click', () => {
