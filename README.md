@@ -14,6 +14,9 @@ punigo.app や Lizzie、Sabaki などで出力した SGF をそのまま貼り�
 
 ---
 
-## 🎮 デモ
-GitHub Pages で公開している場合はここにリンクを貼ります：
+## 🎮 Demo
+SGF Animation Viewer は GitHub Pages で公開されています。
 
+👉 https://nodmiz3.github.io/nodmiz3-sgf-animation-viewer/
+
+SGF をコピーして貼り付けるだけで、盤サイズを自動判定してアニメ再生できます。
